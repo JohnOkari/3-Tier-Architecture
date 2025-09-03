@@ -53,70 +53,32 @@ You will configure storage subsystems, deploy a **WordPress web server**, set up
    sudo gdisk /dev/nvme2n1
    sudo gdisk /dev/nvme3n1
    ```
-![Image 1](images/image2.png)
 
-   * Create a single partition (type `8E00 Linux LVM`).
-   
+   ![Image 2](images/image2.png)
 
-    ### ✅ Steps in `gdisk`
+   **For each disk, follow these steps in `gdisk`:**
 
-    For each new disk (`/dev/nvme1n1`, `/dev/nvme2n1`, `/dev/nvme3n1` on most recent AWS instance types), run:
+   1. **Create a new partition:**
+      - Press `n` (new partition)
+      - Partition number → press **Enter** (default: 1)
+      - First sector → press **Enter** (default, start of disk)
+      - Last sector → press **Enter** (default, use full disk)
+      - Hex code → type `8E00` (Linux LVM)
 
-    ```bash
-    sudo gdisk /dev/nvme1n1
-    ```
+    2. **Write partition table:**
+       - Press `w` (write)
+       - Confirm with `y`
 
-    Inside the `gdisk` menu, follow these keystrokes:
+    3. **Exit gdisk:**
+       - Press `q` (quit)
 
-    1. Create a new partition:
+   **Verify partitions:**
 
-    ```
-    n
-    ```
+   ```bash
+   lsblk
+   ```
 
-    * Partition number → press **Enter** (default: 1)
-    * First sector → press **Enter** (default, start of disk)
-    * Last sector → press **Enter** (default, use full disk)
-    * Hex code or GUID → type:
-
-        ```
-        8E00
-        ```
-
-        (Linux LVM)
-
-    2. Write the partition table to disk:
-
-    ```
-    w
-    ```
-
-    * Confirm with **y**
-
-    3. Exit `gdisk`.
-
-    ---
-
-    ### 🔁 Repeat
-
-    Do the same for:
-
-    ```bash
-    sudo gdisk /dev/nvme2n1
-    sudo gdisk /dev/nvme3n1
-    ```
-
-    ---
-
-    ### 🔍 Verify
-
-    Check partitions with:
-
-    ```bash
-    lsblk
-    ```
-
-    Expected output:
+   Expected output:
 
     ```
     nvme1n1    259:5    0   10G  0 disk
@@ -125,9 +87,7 @@ You will configure storage subsystems, deploy a **WordPress web server**, set up
     └─nvme2n1p1
     nvme3n1    259:7    0   10G  0 disk
     └─nvme3n1p1
-    ```
-
-    ---
+   ```
 
 
 6. Install LVM:
