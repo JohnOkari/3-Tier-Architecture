@@ -109,15 +109,17 @@ You will configure storage subsystems, deploy a **WordPress web server**, set up
 7. Create Physical Volumes:
 
    ```bash
-   sudo pvcreate /dev/xvdf1 /dev/xvdg1 /dev/xvdh1
+   sudo pvcreate /dev/nvme1n1p1 /dev/nvme2n1p1 /dev/nvme3n1p1
    sudo pvs
    ```
 8. Create Volume Group:
 
    ```bash
-   sudo vgcreate webdata-vg /dev/xvdf1 /dev/xvdg1 /dev/xvdh1
+   sudo vgcreate webdata-vg /dev/nvme1n1p1 /dev/nvme2n1p1 /dev/nvme3n1p1
    sudo vgs
    ```
+      ![Image 3](images/image3.png)
+
 9. Create Logical Volumes:
 
    ```bash
