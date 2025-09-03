@@ -33,9 +33,9 @@ You will configure storage subsystems, deploy a **WordPress web server**, set up
 
 ![Image 1](images/image1.png)
  
-* On older instance types, volumes usually show up as /dev/xvdf, /dev/xvdg, /dev/xvdh.
+  * On older instance types, volumes usually show up as /dev/xvdf, /dev/xvdg, /dev/xvdh.
 
-* On most recent AWS instance types (with NVMe storage), volumes appear as /dev/nvme1n1, /dev/nvme2n1, /dev/nvme3n1.
+  * On most recent AWS instance types (with NVMe storage), volumes appear as /dev/nvme1n1, /dev/nvme2n1, /dev/nvme3n1.
 
 👉 Always run: step 4
 
@@ -56,6 +56,80 @@ You will configure storage subsystems, deploy a **WordPress web server**, set up
 ![Image 1](images/image2.png)
 
    * Create a single partition (type `8E00 Linux LVM`).
+   
+
+    ### ✅ Steps in `gdisk`
+
+    For each new disk (`/dev/nvme1n1`, `/dev/nvme2n1`, `/dev/nvme3n1` on most recent AWS instance types), run:
+
+    ```bash
+    sudo gdisk /dev/nvme1n1
+    ```
+
+    Inside the `gdisk` menu, follow these keystrokes:
+
+    1. Create a new partition:
+
+    ```
+    n
+    ```
+
+    * Partition number → press **Enter** (default: 1)
+    * First sector → press **Enter** (default, start of disk)
+    * Last sector → press **Enter** (default, use full disk)
+    * Hex code or GUID → type:
+
+        ```
+        8E00
+        ```
+
+        (Linux LVM)
+
+    2. Write the partition table to disk:
+
+    ```
+    w
+    ```
+
+    * Confirm with **y**
+
+    3. Exit `gdisk`.
+
+    ---
+
+    ### 🔁 Repeat
+
+    Do the same for:
+
+    ```bash
+    sudo gdisk /dev/nvme2n1
+    sudo gdisk /dev/nvme3n1
+    ```
+
+    ---
+
+    ### 🔍 Verify
+
+    Check partitions with:
+
+    ```bash
+    lsblk
+    ```
+
+    Expected output:
+
+    ```
+    nvme1n1    259:5    0   10G  0 disk
+    └─nvme1n1p1
+    nvme2n1    259:6    0   10G  0 disk
+    └─nvme2n1p1
+    nvme3n1    259:7    0   10G  0 disk
+    └─nvme3n1p1
+    ```
+
+    ---
+
+
 6. Install LVM:
 
    ```bash
