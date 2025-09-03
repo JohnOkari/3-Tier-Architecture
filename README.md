@@ -159,7 +159,6 @@ You will configure storage subsystems, deploy a **WordPress web server**, set up
 
     ```bash
     sudo blkid
-    sudo vi /etc/fstab
     ```
      ![Image 5](images/image5.png)
 
