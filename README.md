@@ -3,9 +3,11 @@
 
 # 📘 Web Solution with WordPress (3-Tier Architecture)
 
-This project demonstrates deploying a **WordPress Web Solution** using a **three-tier architecture** with **RedHat Linux EC2 instances** on AWS.
+This project demonstrates deploying a **WordPress Web Solution** using a **three-tier architecture** with **RedHat Linux** or **Ubuntu EC2 instances** on AWS.
 
 You will configure storage subsystems, deploy a **WordPress web server**, set up a **remote MySQL database server**, and connect them to complete the full-stack deployment.
+
+> **Note:** This guide provides commands for both **RedHat/CentOS** and **Ubuntu/Debian** distributions. Choose the appropriate commands for your chosen OS.
 
 ---
 
@@ -20,8 +22,8 @@ You will configure storage subsystems, deploy a **WordPress web server**, set up
 ## 🖥️ Architecture Setup
 
 * **Client:** Your Laptop/PC (web browser).
-* **Web Server:** EC2 RedHat instance (runs Apache + PHP + WordPress).
-* **Database Server:** EC2 RedHat instance (runs MySQL).
+* **Web Server:** EC2 RedHat/Ubuntu instance (runs Apache + PHP + WordPress).
+* **Database Server:** EC2 RedHat/Ubuntu instance (runs MySQL).
 
 ---
 
@@ -92,8 +94,16 @@ You will configure storage subsystems, deploy a **WordPress web server**, set up
 
 6. Install LVM:
 
+   **RedHat/CentOS:**
    ```bash
    sudo yum install -y lvm2
+   sudo lvmdiskscan
+   ```
+
+   **Ubuntu/Debian:**
+   ```bash
+   sudo apt update
+   sudo apt install -y lvm2
    sudo lvmdiskscan
    ```
 7. Create Physical Volumes:
@@ -187,13 +197,23 @@ You will configure storage subsystems, deploy a **WordPress web server**, set up
    ```
 2. Install Apache, PHP, and dependencies:
 
+   **RedHat/CentOS:**
    ```bash
    sudo yum -y install wget httpd php php-mysqlnd php-fpm php-json
    sudo systemctl enable httpd
    sudo systemctl start httpd
    ```
-3. Enable PHP 7.4 (Remi repo):
 
+   **Ubuntu/Debian:**
+   ```bash
+   sudo apt update
+   sudo apt install -y wget apache2 php php-mysql php-fpm php-json
+   sudo systemctl enable apache2
+   sudo systemctl start apache2
+   ```
+3. Enable PHP 7.4:
+
+   **RedHat/CentOS (Remi repo):**
    ```bash
    sudo yum install -y https://dl.fedoraproject.org/pub/epel/epel-release-latest-8.noarch.rpm
    sudo yum install -y yum-utils http://rpms.remirepo.net/enterprise/remi-release-8.rpm
@@ -204,6 +224,19 @@ You will configure storage subsystems, deploy a **WordPress web server**, set up
    sudo systemctl enable php-fpm
    setsebool -P httpd_execmem 1
    sudo systemctl restart httpd
+   ```
+
+   **Ubuntu/Debian:**
+   ```bash
+   sudo apt install -y software-properties-common
+   sudo add-apt-repository ppa:ondrej/php
+   sudo apt update
+   sudo apt install -y php7.4 php7.4-opcache php7.4-gd php7.4-curl php7.4-mysql php7.4-fpm
+   sudo systemctl start php7.4-fpm
+   sudo systemctl enable php7.4-fpm
+   sudo a2enmod proxy_fcgi setenvif
+   sudo a2enconf php7.4-fpm
+   sudo systemctl restart apache2
    ```
 4. Install WordPress:
 
@@ -229,11 +262,20 @@ You will configure storage subsystems, deploy a **WordPress web server**, set up
 
 1. Install MySQL:
 
+   **RedHat/CentOS:**
    ```bash
    sudo yum -y update
    sudo yum install -y mysql-server
    sudo systemctl restart mysqld
    sudo systemctl enable mysqld
+   ```
+
+   **Ubuntu/Debian:**
+   ```bash
+   sudo apt update
+   sudo apt install -y mysql-server
+   sudo systemctl restart mysql
+   sudo systemctl enable mysql
    ```
 2. Configure WordPress DB:
 
@@ -253,8 +295,16 @@ You will configure storage subsystems, deploy a **WordPress web server**, set up
 
 1. Install MySQL client on Web Server:
 
+   **RedHat/CentOS:**
    ```bash
    sudo yum install -y mysql
+   mysql -u myuser -p -h <DB-Server-Private-IP>
+   SHOW DATABASES;
+   ```
+
+   **Ubuntu/Debian:**
+   ```bash
+   sudo apt install -y mysql-client
    mysql -u myuser -p -h <DB-Server-Private-IP>
    SHOW DATABASES;
    ```
@@ -304,7 +354,7 @@ If you see the installation screen → 🎉 **SUCCESS** 🎉
 
 ---
 
-✅ **Congratulations!** You have deployed a full-scale web solution with WordPress & MySQL on AWS EC2 using RedHat Linux.
+✅ **Congratulations!** You have deployed a full-scale web solution with WordPress & MySQL on AWS EC2 using RedHat Linux or Ubuntu.
 
 ---
 
