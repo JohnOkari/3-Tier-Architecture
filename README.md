@@ -133,6 +133,8 @@ You will configure storage subsystems, deploy a **WordPress web server**, set up
     sudo vgdisplay -v
     sudo lsblk
     ```
+     ![Image 4](images/image4.png)
+     
 11. Format partitions:
 
     ```bash
@@ -159,13 +161,21 @@ You will configure storage subsystems, deploy a **WordPress web server**, set up
     sudo blkid
     sudo vi /etc/fstab
     ```
+     ![Image 5](images/image5.png)
 
+    * Edit /etc/fstab:
+    
+    ```bash
+     sudo vi /etc/fstab
+    ```
     Example:
 
     ```
     UUID=<apps-lv-UUID> /var/www/html ext4 defaults 0 0
-    UUID=<logs-lv-UUID> /var/log     ext4 defaults 0 0
+    UUID=<logs-lv-UUID> /var/log ext4 defaults 0 0
     ```
+     ![Image 6](images/image6.png)
+
 15. Reload mounts:
 
     ```bash
@@ -173,7 +183,7 @@ You will configure storage subsystems, deploy a **WordPress web server**, set up
     sudo systemctl daemon-reload
     df -h
     ```
-
+     ![Image 7](images/image7.png)
 ---
 
 ## ⚙️ Step 2 — Prepare the Database Server
