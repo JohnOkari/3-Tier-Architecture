@@ -30,6 +30,15 @@ You will configure storage subsystems, deploy a **WordPress web server**, set up
 1. Launch a RedHat EC2 instance (**Web Server**).
 2. Create **3 x 10 GiB EBS volumes** in the same AZ.
 3. Attach volumes to your Web Server EC2.
+
+![Image 1](images/image1.png)
+ 
+* On older instance types, volumes usually show up as /dev/xvdf, /dev/xvdg, /dev/xvdh.
+
+* On most recent AWS instance types (with NVMe storage), volumes appear as /dev/nvme1n1, /dev/nvme2n1, /dev/nvme3n1.
+
+👉 Always run: step 4
+
 4. Verify attached volumes:
 
    ```bash
@@ -40,10 +49,11 @@ You will configure storage subsystems, deploy a **WordPress web server**, set up
 5. Partition each disk using `gdisk`:
 
    ```bash
-   sudo gdisk /dev/xvdf
-   sudo gdisk /dev/xvdg
-   sudo gdisk /dev/xvdh
+   sudo gdisk /dev/nvme1n1
+   sudo gdisk /dev/nvme2n1
+   sudo gdisk /dev/nvme3n1
    ```
+![Image 1](images/image2.png)
 
    * Create a single partition (type `8E00 Linux LVM`).
 6. Install LVM:
