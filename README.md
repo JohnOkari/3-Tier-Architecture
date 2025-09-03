@@ -33,7 +33,7 @@ You will configure storage subsystems, deploy a **WordPress web server**, set up
 2. Create **3 x 10 GiB EBS volumes** in the same AZ.
 3. Attach volumes to your Web Server EC2.
 
-![Image 1](images/image1.png)
+     ![Image 1](images/image1.png)
  
   * On older instance types, volumes usually show up as /dev/xvdf, /dev/xvdg, /dev/xvdh.
 
@@ -56,7 +56,7 @@ You will configure storage subsystems, deploy a **WordPress web server**, set up
    sudo gdisk /dev/nvme3n1
    ```
 
-   ![Image 2](images/image2.png)
+     ![Image 2](images/image2.png)
 
    **For each disk, follow these steps in `gdisk`:**
 
@@ -118,7 +118,7 @@ You will configure storage subsystems, deploy a **WordPress web server**, set up
    sudo vgcreate webdata-vg /dev/nvme1n1p1 /dev/nvme2n1p1 /dev/nvme3n1p1
    sudo vgs
    ```
-      ![Image 3](images/image3.png)
+     ![Image 3](images/image3.png)
 
 9. Create Logical Volumes:
 
