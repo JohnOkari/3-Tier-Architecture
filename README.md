@@ -363,6 +363,7 @@ You will configure storage subsystems, deploy a **WordPress web server**, set up
    sudo systemctl restart mysqld
    sudo systemctl enable mysqld
    ```
+     ![Image 10](images/image10.png)
 
    **Ubuntu/Debian:**
    ```bash
@@ -395,7 +396,7 @@ You will configure storage subsystems, deploy a **WordPress web server**, set up
    SHOW DATABASES;
    exit;
    ```
-
+     ![Image 11](images/image11.png)
 ---
 
 ## ⚙️ Step 5 — Connect WordPress to Remote Database
@@ -425,6 +426,8 @@ You will configure storage subsystems, deploy a **WordPress web server**, set up
    mysql -u myuser -p -h <DB-Server-Private-IP>
    SHOW DATABASES;
    ```
+     ![Image 11](images/image11.png)
+
 2. Edit WordPress config:
 
    Open WordPress configuration file:
@@ -458,6 +461,20 @@ http://<Web-Server-Public-IP>/wordpress/
 * Complete the WordPress setup by entering site title, username, and password.
 
 If you see the installation screen → 🎉 **SUCCESS** 🎉
+
+     ![Image 13](images/image13.png)  
+
+If it shows the above, the configuration on/var/www/html/wordpress/wp-config.php was successful.
+
+     ![Image 14](images/image14.png)  
+
+Here, WordPress will walk you through the final setup steps, including:
+
+ * Site Title: Set the title of your WordPress site.
+ * Admin Username: Create a username for the admin account.
+ * Password: Create a secure password for the admin account.
+ * Email: Provide an email address for the administrator account.
+ * Once you fill in these details, click Install WordPress.
 
 ---
 
