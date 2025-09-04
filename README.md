@@ -462,11 +462,11 @@ http://<Web-Server-Public-IP>/wordpress/
 
 If you see the installation screen → 🎉 **SUCCESS** 🎉
 
-     ![Image 13](images/image13.png)  
+  ![Image 13](images/image13.png)  
 
 If it shows the above, the configuration on/var/www/html/wordpress/wp-config.php was successful.
 
-     ![Image 14](images/image14.png)  
+  ![Image 14](images/image14.png)  
 
 Here, WordPress will walk you through the final setup steps, including:
 
