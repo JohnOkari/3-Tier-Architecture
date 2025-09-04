@@ -328,22 +328,24 @@ You will configure storage subsystems, deploy a **WordPress web server**, set up
    
    Configure WordPress:
    ```bash
-   cp wordpress/wp-config-sample.php wordpress/wp-config.php
-   cp -R wordpress /var/www/html/
+   sudo cp wordpress/wp-config-sample.php wordpress/wp-config.php
+   sudo cp -R wordpress /var/www/html/
    ```
 5. Set permissions:
 
    Set proper ownership for WordPress files:
    ```bash
-   sudo chown -R apache:apache /var/www/html/wordpress
+   sudo chown -R www-data:www-data /var/www/html/wordpress
    ```
    
    Set SELinux context for web content:
    ```bash
-   sudo chcon -t httpd_sys_rw_content_t /var/www/html/wordpress -R
+   sudo chown -R www-data:www-data /var/www/html/wordpress
+   sudo find /var/www/html/wordpress -type d -exec chmod 755 {} \;
+   sudo find /var/www/html/wordpress -type f -exec chmod 644 {} \;
    ```
    
-   Allow Apache to connect to network:
+   Allow Apache to connect to network:Amazon Linux / CentOS (with SELinux):
    ```bash
    sudo setsebool -P httpd_can_network_connect=1
    ```
