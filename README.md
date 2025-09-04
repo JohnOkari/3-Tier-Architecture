@@ -215,6 +215,7 @@ You will configure storage subsystems, deploy a **WordPress web server**, set up
    sudo systemctl enable httpd
    sudo systemctl start httpd
    ```
+     ![Image 9](images/image9.png)
 
    **Ubuntu/Debian:**
    ```bash
