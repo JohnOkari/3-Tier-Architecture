@@ -108,23 +108,43 @@ You will configure storage subsystems, deploy a **WordPress web server**, set up
    ```
 7. Create Physical Volumes:
 
+   Initialize the three partitions as physical volumes:
    ```bash
    sudo pvcreate /dev/nvme1n1p1 /dev/nvme2n1p1 /dev/nvme3n1p1
+   ```
+   
+   Verify physical volumes:
+   ```bash
    sudo pvs
    ```
 8. Create Volume Group:
 
+   Create a volume group named 'webdata-vg' from the three physical volumes:
    ```bash
    sudo vgcreate webdata-vg /dev/nvme1n1p1 /dev/nvme2n1p1 /dev/nvme3n1p1
+   ```
+   
+   Verify volume group:
+   ```bash
    sudo vgs
    ```
      ![Image 3](images/image3.png)
 
 9. Create Logical Volumes:
 
+   Create two logical volumes:
+   - **apps-lv** for storing website data, using 14 GiB of space:
    ```bash
    sudo lvcreate -n apps-lv -L 14G webdata-vg
+   ```
+   
+   - **logs-lv** for storing logs, using the remaining space:
+   ```bash
    sudo lvcreate -n logs-lv -L 14G webdata-vg
+   ```
+   
+   Verify logical volumes:
+   ```bash
    sudo lvs
    ```
 10. Verify setup:
@@ -137,35 +157,58 @@ You will configure storage subsystems, deploy a **WordPress web server**, set up
      
 11. Format partitions:
 
+    Format the apps logical volume with ext4 filesystem:
     ```bash
     sudo mkfs.ext4 /dev/webdata-vg/apps-lv
+    ```
+    
+    Format the logs logical volume with ext4 filesystem:
+    ```bash
     sudo mkfs.ext4 /dev/webdata-vg/logs-lv
     ```
 12. Create mount points:
 
+    Create directory for website files:
     ```bash
     sudo mkdir -p /var/www/html
+    ```
+    
+    Create directory for log recovery:
+    ```bash
     sudo mkdir -p /home/recovery/logs
     ```
 13. Mount volumes:
 
+    Mount the apps logical volume to the web directory:
     ```bash
     sudo mount /dev/webdata-vg/apps-lv /var/www/html
+    ```
+    
+    Backup existing logs before mounting:
+    ```bash
     sudo rsync -av /var/log/ /home/recovery/logs/
+    ```
+    
+    Mount the logs logical volume to /var/log:
+    ```bash
     sudo mount /dev/webdata-vg/logs-lv /var/log
+    ```
+    
+    Restore logs to the new mount:
+    ```bash
     sudo rsync -av /home/recovery/logs/ /var/log
     ```
 14. Persist mounts in `/etc/fstab`:
 
+    Get UUIDs of the logical volumes:
     ```bash
     sudo blkid
     ```
      ![Image 5](images/image5.png)
 
-    * Edit /etc/fstab:
-    
+    Edit the fstab file to make mounts persistent:
     ```bash
-     sudo vi /etc/fstab
+    sudo vi /etc/fstab
     ```
     Example:
 
@@ -177,9 +220,18 @@ You will configure storage subsystems, deploy a **WordPress web server**, set up
 
 15. Reload mounts:
 
+    Apply all fstab entries:
     ```bash
     sudo mount -a
+    ```
+    
+    Reload systemd daemon:
+    ```bash
     sudo systemctl daemon-reload
+    ```
+    
+    Verify mount status:
+    ```bash
     df -h
     ```
      ![Image 7](images/image7.png)
@@ -192,9 +244,18 @@ You will configure storage subsystems, deploy a **WordPress web server**, set up
 3. Repeat the same partitioning and LVM setup as the Web Server.
 4. Create **db-lv** logical volume and mount to `/db`:
 
+   Create database mount point:
    ```bash
    sudo mkdir -p /db
+   ```
+   
+   Mount the logical volume to /db:
+   ```bash
    sudo mount /dev/webdata-vg/apps-lv /db/
+   ```
+   
+   Verify database mount:
+   ```bash
    df -h | grep db
    ```
      ![Image 8](images/image8.png) 
@@ -253,19 +314,37 @@ You will configure storage subsystems, deploy a **WordPress web server**, set up
    ```
 4. Install WordPress:
 
+   Create WordPress directory and download:
    ```bash
    mkdir wordpress && cd wordpress
    sudo wget http://wordpress.org/latest.tar.gz
+   ```
+   
+   Extract WordPress files:
+   ```bash
    sudo tar -xzvf latest.tar.gz
    sudo rm -rf latest.tar.gz
+   ```
+   
+   Configure WordPress:
+   ```bash
    cp wordpress/wp-config-sample.php wordpress/wp-config.php
    cp -R wordpress /var/www/html/
    ```
 5. Set permissions:
 
+   Set proper ownership for WordPress files:
    ```bash
    sudo chown -R apache:apache /var/www/html/wordpress
+   ```
+   
+   Set SELinux context for web content:
+   ```bash
    sudo chcon -t httpd_sys_rw_content_t /var/www/html/wordpress -R
+   ```
+   
+   Allow Apache to connect to network:
+   ```bash
    sudo setsebool -P httpd_can_network_connect=1
    ```
 
@@ -292,10 +371,23 @@ You will configure storage subsystems, deploy a **WordPress web server**, set up
    ```
 2. Configure WordPress DB:
 
+   Access MySQL as root:
    ```bash
    sudo mysql
+   ```
+   
+   Create WordPress database:
+   ```sql
    CREATE DATABASE wordpress;
+   ```
+   
+   Create database user:
+   ```sql
    CREATE USER 'myuser'@'<Web-Server-Private-IP>' IDENTIFIED BY 'mypass';
+   ```
+   
+   Grant privileges to user:
+   ```sql
    GRANT ALL ON wordpress.* TO 'myuser'@'<Web-Server-Private-IP>';
    FLUSH PRIVILEGES;
    SHOW DATABASES;
@@ -309,25 +401,36 @@ You will configure storage subsystems, deploy a **WordPress web server**, set up
 1. Install MySQL client on Web Server:
 
    **RedHat/CentOS:**
+   Install MySQL client:
    ```bash
    sudo yum install -y mysql
+   ```
+   
+   Test database connection:
+   ```bash
    mysql -u myuser -p -h <DB-Server-Private-IP>
    SHOW DATABASES;
    ```
 
    **Ubuntu/Debian:**
+   Install MySQL client:
    ```bash
    sudo apt install -y mysql-client
+   ```
+   
+   Test database connection:
+   ```bash
    mysql -u myuser -p -h <DB-Server-Private-IP>
    SHOW DATABASES;
    ```
 2. Edit WordPress config:
 
+   Open WordPress configuration file:
    ```bash
    sudo vi /var/www/html/wordpress/wp-config.php
    ```
 
-   Update:
+   Update database connection settings:
 
    ```php
    define('DB_NAME', 'wordpress');
