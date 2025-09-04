@@ -194,9 +194,10 @@ You will configure storage subsystems, deploy a **WordPress web server**, set up
 
    ```bash
    sudo mkdir -p /db
-   sudo mount /dev/db-vg/db-lv /db
+   sudo mount /dev/webdata-vg/apps-lv /db/
+   df -h | grep db
    ```
-
+     ![Image 8](images/image8.png) 
 ---
 
 ## ⚙️ Step 3 — Install WordPress on Web Server
